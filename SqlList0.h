@@ -93,7 +93,8 @@ private:
 template<typename DataType>
 inline SequenceList<DataType>::SequenceList()
 {
-	_ptr = new DataType[CONSTANT::DEFAULT_SPACE]{ 0 };
+	_ptr = new DataType[CONSTANT::DEFAULT_SPACE];
+
 	currentLength = CONSTANT::DEFAULT_SPACE;
 	capacity = CONSTANT::DEFAULT_SPACE;
 }
@@ -112,7 +113,7 @@ inline SequenceList<DataType>::SequenceList(const SequenceList<DataType>& L)
 	capacity = L.capacity;
 	currentLength = L.currentLength;
 	//delete[] _ptr;
-	_ptr = new DataType[capacity]{ 0 };
+	_ptr = new DataType[capacity]{ DataType() };
 	for (size_t i = 0; i < L.currentLength; i++)
 	{
 		_ptr[i] = L._ptr[i];
@@ -124,7 +125,7 @@ inline SequenceList<DataType>::SequenceList(const DataType* arr, size_t Size)
 {
 	currentLength = Size;
 	capacity = Size * 2;
-	_ptr = new DataType[capacity]{ 0 };
+	_ptr = new DataType[capacity]{ DataType() };
 	for (size_t i = 0; i < Size; i++)
 	{
 		_ptr[i] = arr[i];
@@ -137,7 +138,7 @@ inline SequenceList<DataType>::SequenceList(const DataType* arr_first, const Dat
 	size_t Size = (arr_last - arr_first) / sizeof(DataType);
 	currentLength = Size;
 	capacity = Size * 2;
-	_ptr = new DataType[capacity]{ 0 };
+	_ptr = new DataType[capacity]{ DataType() };
 	int count = 0;
 	while (arr_first < arr_last)
 	{
@@ -150,7 +151,7 @@ inline SequenceList<DataType>::SequenceList(std::initializer_list<DataType> list
 {
 	currentLength = list.size();
 	capacity = currentLength * 2;
-	_ptr = new DataType[capacity]{ 0 };
+	_ptr = new DataType[capacity]{ DataType() };
 	int j = 0;
 	for (auto i = list.begin(); i != list.end(); i++, j++)
 	{
@@ -183,9 +184,10 @@ inline bool SequenceList<DataType>::pop_back()
 {
 	if (!isEmpty())
 	{
-		_ptr[currentLength - 1] = 0;
+		_ptr[currentLength - 1] = DataType();
+
 		--currentLength;
-		return _ptr[currentLength] == 0;
+		return 1;
 	}
 	else
 	{
@@ -287,7 +289,7 @@ inline bool SequenceList<DataType>::erase(Iterator _first, Iterator _last)
 	{
 		for (auto it = _first; it != _last; ++it)
 		{
-			*it = 0; // 将区间内的数都设置为0
+			*it = DataType(); // 将区间内的数都设置为0
 		}
 		return true;
 	}
