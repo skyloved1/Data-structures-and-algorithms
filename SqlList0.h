@@ -10,8 +10,8 @@ public:
 	//Iterator
 	using Iterator = DataType*;
 	using const_Iterator = const DataType*;
-	Iterator _begin;
-	Iterator _end;
+	//Iterator _begin;
+	//Iterator _end;
 	//constructor
 
 	SequenceList();
@@ -29,6 +29,8 @@ public:
 	bool erase(Iterator _first, Iterator _last);		//将区间内的数都设置为0
 	bool delete_node(Iterator _first, Iterator _last);	//删除区间内的节点
 	bool copy_to_arr(Iterator _first, Iterator _last, DataType* _destnation); //将区间内的内容 赋值给普通数组
+	bool delete_first_val(DataType val);									//删除第一个值为val的元素
+	bool delete_all_val(DataType val);										//删除所有值为Val的元素 O(n)
 	Iterator begin() { return &_ptr[0]; }
 	Iterator end() { return &_ptr[currentLength]; }
 	//common bool
@@ -79,7 +81,6 @@ protected:
 		{
 			temp[i] = _ptr[i];
 		}
-		delete[] _ptr;
 		_ptr = temp;
 	}
 
@@ -113,7 +114,7 @@ inline SequenceList<DataType>::SequenceList(const SequenceList<DataType>& L)
 	capacity = L.capacity;
 	currentLength = L.currentLength;
 	//delete[] _ptr;
-	_ptr = new DataType[capacity]{ DataType() };
+	_ptr = new DataType[capacity + 1];
 	for (size_t i = 0; i < L.currentLength; i++)
 	{
 		_ptr[i] = L._ptr[i];
@@ -135,7 +136,7 @@ inline SequenceList<DataType>::SequenceList(const DataType* arr, size_t Size)
 template<typename DataType>
 inline SequenceList<DataType>::SequenceList(const DataType* arr_first, const DataType* arr_last)
 {
-	size_t Size = (arr_last - arr_first) / sizeof(DataType);
+	size_t Size = (arr_last - arr_first);
 	currentLength = Size;
 	capacity = Size * 2;
 	_ptr = new DataType[capacity]{ DataType() };
@@ -162,8 +163,6 @@ inline SequenceList<DataType>::SequenceList(std::initializer_list<DataType> list
 template<typename DataType>
 inline SequenceList<DataType>::~SequenceList()
 {
-	currentLength = 0;
-	capacity = 0;
 	delete[]_ptr;
 }
 
@@ -236,18 +235,18 @@ inline bool SequenceList<DataType>::delete_node(size_t pos)
 template<typename DataType>
 inline bool SequenceList<DataType>::delete_node(Iterator _first, Iterator _last)
 {
-	if (_first < _last)
+	if (_first < _last && _last <= this->end())
 	{
-		int Tmplength = (_last - _first) / sizeof(SequenceList<DataType>);
-		for (auto i = _last; i != end; i++)
+		int Tmplength = _last - _first;
+		for (auto i = _last; i != this->end(); ++i)
 		{
-			_ptr[i - Tmplength] = _ptr[i];
+			*(i - Tmplength) = *i;
 		}
-		return 1;
+		currentLength -= Tmplength;
+		return true;
 	}
-	return 0;
+	return false;
 }
-
 template<typename DataType>
 inline bool SequenceList<DataType>::copy_to_arr(Iterator _first, Iterator _last, DataType* _destnation)
 {
@@ -260,6 +259,61 @@ inline bool SequenceList<DataType>::copy_to_arr(Iterator _first, Iterator _last,
 		return 1;
 	}
 	return 0;
+}
+//复杂度为O(n)
+template<typename DataType>
+inline bool SequenceList<DataType>::delete_first_val(DataType val)
+{
+	bool haveFound = false;
+	size_t i = 0;
+	for (; i < this->get_length(); i++)
+	{
+		if (_ptr[i] == val)
+		{
+			haveFound = true;
+			break;
+		}
+	}
+	if (haveFound)
+	{
+		delete_node(i + 1);
+		return true;
+	}
+
+	return false;
+}
+//复杂度为O(n)
+template<typename DataType>
+inline bool SequenceList<DataType>::delete_all_val(DataType val)
+{	//双指针
+	Iterator i = this->begin();
+	Iterator j = this->begin();
+	for (; j < this->end(); ++j)
+	{
+		if ((j + 1) != (this->end())) {
+			if (*j == val)
+			{
+				++j;
+			}
+			*i = *j;
+
+			if (*i != val)
+			{
+				++i;
+			}
+		}
+		else
+		{
+			break;
+		}
+	}
+	currentLength = i - this->begin() + 1;
+	if (_ptr[currentLength - 1] == val)
+	{
+		pop_back();
+	}
+
+	return 1;
 }
 
 template<typename DataType>
