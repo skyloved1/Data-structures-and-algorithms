@@ -290,16 +290,16 @@ inline bool SequenceList<DataType>::delete_all_val(DataType val)
 	Iterator j = this->begin();
 	for (; j < this->end(); ++j)
 	{
-		if ((j + 1) != (this->end())) {
-			if (*j == val)
+		if ((j + 1) != (this->end())) {//快指针没有到表尾
+			if (*j == val)//如果快指针指向的是要删除的值
 			{
-				++j;
+				++j;		//越过这个值，把快指针的下一个值赋值给	慢指针  （无法解决最后一个元素）
 			}
-			*i = *j;
+			*i = *j;		//赋值
 
-			if (*i != val)
-			{
-				++i;
+			if (*i != val)	//判断如果快指针的下一个值仍是要删除的值，会赋值给 慢指针，所以要判定慢指针是否为要删除的值
+			{				//如果是要删除的值，则慢指针不移动
+				++i;		//如果不是要删除的值，才会移动
 			}
 		}
 		else
@@ -307,8 +307,8 @@ inline bool SequenceList<DataType>::delete_all_val(DataType val)
 			break;
 		}
 	}
-	currentLength = i - this->begin() + 1;
-	if (_ptr[currentLength - 1] == val)
+	currentLength = i - this->begin() + 1;		//极端情况：慢指针指向的是要删除的值，快指针指向最后一个元素时也是要删除的值
+	if (_ptr[currentLength - 1] == val)			//只能特化处理
 	{
 		pop_back();
 	}
