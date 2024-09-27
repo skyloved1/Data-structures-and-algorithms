@@ -169,13 +169,17 @@ inline SequenceList<DataType>::~SequenceList()
 template<typename DataType>
 inline bool SequenceList<DataType>::push_back(const DataType& val)
 {
-	if (currentLength + 1 >= capacity)
+	if (!isEmpty())
 	{
-		resize(capacity);
+		if (currentLength + 1 >= capacity)
+		{
+			resize(capacity);
+		}
+		_ptr[currentLength] = val;
+		++currentLength;
+		return 1;
 	}
-	_ptr[currentLength] = val;
-	++currentLength;
-	return _ptr[currentLength - 1] == val;
+	return 0;
 }
 
 template<typename DataType>
@@ -197,39 +201,47 @@ inline bool SequenceList<DataType>::pop_back()
 template<typename DataType>
 inline bool SequenceList<DataType>::insert_node(const DataType& val, size_t pos)
 {
-	pos -= 1;
-	if (pos > currentLength)
+	if (!isEmpty())
 	{
-		return false;
-	}
-	if (currentLength + 1 >= capacity)
-	{
-		resize(currentLength + 1);
-	}
+		pos -= 1;
+		if (pos > currentLength)
+		{
+			return false;
+		}
+		if (currentLength + 1 >= capacity)
+		{
+			resize(currentLength + 1);
+		}
 
-	for (size_t i = currentLength; i > pos; --i)
-	{
-		_ptr[i] = _ptr[i - 1];
+		for (size_t i = currentLength; i > pos; --i)
+		{
+			_ptr[i] = _ptr[i - 1];
+		}
+		_ptr[pos] = val;
+		++currentLength;
+		return 1;
 	}
-	_ptr[pos] = val;
-	++currentLength;
-	return 1;
+	return false;
 }
 
 template<typename DataType>
 inline bool SequenceList<DataType>::delete_node(size_t pos)
 {
-	pos -= 1;
-	if (pos >= currentLength)
+	if (!isEmpty())
 	{
-		return 0;
+		pos -= 1;
+		if (pos >= currentLength)
+		{
+			return 0;
+		}
+		for (size_t i = pos; i < currentLength; ++i)
+		{
+			_ptr[i] = _ptr[i + 1];
+		}
+		--currentLength;
+		return 1;
 	}
-	for (size_t i = pos; i < currentLength; ++i)
-	{
-		_ptr[i] = _ptr[i + 1];
-	}
-	--currentLength;
-	return 1;
+	return false;
 }
 
 template<typename DataType>
@@ -264,20 +276,23 @@ inline bool SequenceList<DataType>::copy_to_arr(Iterator _first, Iterator _last,
 template<typename DataType>
 inline bool SequenceList<DataType>::delete_first_val(DataType val)
 {
-	bool haveFound = false;
-	size_t i = 0;
-	for (; i < this->get_length(); i++)
+	if (!isEmpty())
 	{
-		if (_ptr[i] == val)
+		bool haveFound = false;
+		size_t i = 0;
+		for (; i < this->get_length(); i++)
 		{
-			haveFound = true;
-			break;
+			if (_ptr[i] == val)
+			{
+				haveFound = true;
+				break;
+			}
 		}
-	}
-	if (haveFound)
-	{
-		delete_node(i + 1);
-		return true;
+		if (haveFound)
+		{
+			delete_node(i + 1);
+			return true;
+		}
 	}
 
 	return false;
@@ -285,68 +300,80 @@ inline bool SequenceList<DataType>::delete_first_val(DataType val)
 //复杂度为O(n)
 template<typename DataType>
 inline bool SequenceList<DataType>::delete_all_val(DataType val)
-{	//双指针
-	Iterator i = this->begin();
-	Iterator j = this->begin();
-	for (; j < this->end(); ++j)
+{
+	if (!isEmpty())
 	{
-		if ((j + 1) != (this->end())) {//快指针没有到表尾
-			if (*j == val)//如果快指针指向的是要删除的值
-			{
-				++j;		//越过这个值，把快指针的下一个值赋值给	慢指针  （无法解决最后一个元素）
-			}
-			*i = *j;		//赋值
-
-			if (*i != val)	//判断如果快指针的下一个值仍是要删除的值，会赋值给 慢指针，所以要判定慢指针是否为要删除的值
-			{				//如果是要删除的值，则慢指针不移动
-				++i;		//如果不是要删除的值，才会移动
-			}
-		}
-		else
+		//双指针
+		Iterator i = this->begin();
+		Iterator j = this->begin();
+		for (; j < this->end(); ++j)
 		{
-			break;
-		}
-	}
-	currentLength = i - this->begin() + 1;		//极端情况：慢指针指向的是要删除的值，快指针指向最后一个元素时也是要删除的值
-	if (_ptr[currentLength - 1] == val)			//只能特化处理
-	{
-		pop_back();
-	}
+			if ((j + 1) != (this->end())) {//快指针没有到表尾
+				if (*j == val)//如果快指针指向的是要删除的值
+				{
+					++j;		//越过这个值，把快指针的下一个值赋值给	慢指针  （无法解决最后一个元素）
+				}
+				*i = *j;		//赋值
 
-	return 1;
+				if (*i != val)	//判断如果快指针的下一个值仍是要删除的值，会赋值给 慢指针，所以要判定慢指针是否为要删除的值
+				{				//如果是要删除的值，则慢指针不移动
+					++i;		//如果不是要删除的值，才会移动
+				}
+			}
+		}
+		currentLength = i - this->begin() + 1;		//极端情况：慢指针指向的是要删除的值，快指针指向最后一个元素时也是要删除的值
+		if (_ptr[currentLength - 1] == val)			//只能特化处理
+		{
+			pop_back();
+		}
+
+		return 1;
+	}
+	return false;
 }
 
 template<typename DataType>
 inline SequenceList<DataType>& SequenceList<DataType>::operator=(const SequenceList<DataType>& L)
 {
-	for (size_t i = 0; i < L.currentLength; i++)
+	if (!isEmpty())
 	{
-		this[i] = L[i];
+		for (size_t i = 0; i < L.currentLength; i++)
+		{
+			this[i] = L[i];
+		}
+		return this;
 	}
-	return this;
+	return false;
 }
 
 template<typename Datatype>
 std::ostream& operator<<(std::ostream& os, SequenceList<Datatype>& L)
 {
-	for (int i = 0; i < L.get_length(); i++)
+	if (!L.isEmpty())
 	{
-		os << L[i] << '\t';
+		for (int i = 0; i < L.get_length(); i++)
+		{
+			os << L[i] << '\t';
+		}
+		os << std::endl;
+		return os;
 	}
-	os << std::endl;
-	return os;
 }
 template<typename DataType>
 inline bool SequenceList<DataType>::erase(Iterator _first, Iterator _last)
 {
-	if (_first < _last)
+	if (!isEmpty())
 	{
-		for (auto it = _first; it != _last; ++it)
+		if (_first < _last)
 		{
-			*it = DataType(); // 将区间内的数都设置为0
+			for (auto it = _first; it != _last; ++it)
+			{
+				*it = DataType(); // 将区间内的数都设置为0
+			}
+			return true;
 		}
-		return true;
 	}
+
 	return false;
 }
 #endif // !SEQUENCELIST_H
