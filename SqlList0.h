@@ -1,6 +1,8 @@
 #pragma once
+
 #ifndef SEQUENCELIST_H
 #define SEQUENCELIST_H
+
 #include <initializer_list>
 #include <iostream>
 template<typename DataType>
@@ -10,6 +12,7 @@ public:
 	//Iterator
 	using Iterator = DataType*;
 	using const_Iterator = const DataType*;
+	//using  index = size_t;
 	//Iterator _begin;
 	//Iterator _end;
 	//constructor
@@ -31,6 +34,8 @@ public:
 	bool copy_to_arr(Iterator _first, Iterator _last, DataType* _destnation); //将区间内的内容 赋值给普通数组
 	bool delete_first_val(DataType val);									//删除第一个值为val的元素
 	bool delete_all_val(DataType val);										//删除所有值为Val的元素 O(n)
+	template<typename fn_bool>
+	size_t select_val(fn_bool Function, Iterator _first, Iterator); //查询值
 	Iterator begin() { return &_ptr[0]; }
 	Iterator end() { return &_ptr[currentLength]; }
 	//common bool
@@ -51,14 +56,17 @@ public:
 		{
 			return _ptr[index];
 		}
-		throw "超出当前长度，获取内容失败！\n";
+		std::endl(std::cout);
+		std::cerr << "超出当前长度，获取内容失败！\n";
 	}
+	//friend
 	friend  std::ostream& operator<<(std::ostream& os, const SequenceList& L);
-
+	template<typename DataType>
+	friend std::istream& operator>>(std::istream& is, SequenceList<DataType>& L);
 	SequenceList<DataType>& operator=(const SequenceList<DataType>& L);
 	//setter
 	void resize(size_t size) {
-		if (size > get_length())
+		if (size >= get_length())
 		{
 			new_capacity(size * 2 + 1);
 		}
@@ -75,13 +83,14 @@ protected:
 		return capacity;
 	}
 
-	void new_capacity(int size) {
-		DataType* temp = new DataType[currentLength + 10];
+	void new_capacity(size_t size) {
+		DataType* temp = new DataType[currentLength + size];
 		for (size_t i = 0; i < get_length(); i++)
 		{
 			temp[i] = _ptr[i];
 		}
 		_ptr = temp;
+		capacity = currentLength + size;
 	}
 
 private:
@@ -96,7 +105,7 @@ inline SequenceList<DataType>::SequenceList()
 {
 	_ptr = new DataType[CONSTANT::DEFAULT_SPACE];
 
-	currentLength = CONSTANT::DEFAULT_SPACE;
+	currentLength = 0;
 	capacity = CONSTANT::DEFAULT_SPACE;
 }
 
@@ -163,22 +172,17 @@ inline SequenceList<DataType>::SequenceList(std::initializer_list<DataType> list
 template<typename DataType>
 inline SequenceList<DataType>::~SequenceList()
 {
+	std::cout << "该类已销毁" << std::endl;
 	delete[]_ptr;
 }
 
 template<typename DataType>
-inline bool SequenceList<DataType>::push_back(const DataType& val)
-{
-	if (!isEmpty())
-	{
-		if (currentLength + 1 >= capacity)
-		{
-			resize(capacity);
-		}
-		_ptr[currentLength] = val;
-		++currentLength;
-		return 1;
-	}
+inline bool SequenceList<DataType>::push_back(const DataType& val) {
+	if (isFull())resize(capacity);
+	_ptr[currentLength] = val;
+	++currentLength;
+	return 1;
+
 	return 0;
 }
 
@@ -359,6 +363,16 @@ std::ostream& operator<<(std::ostream& os, SequenceList<Datatype>& L)
 		return os;
 	}
 }
+
+template<typename DataType>
+std::istream& operator>>(std::istream& is, SequenceList< DataType>& L)
+{
+	DataType value;
+	if (is >> value) {
+		if (L.push_back(value) == 0) exit(0);
+	}
+	return is;
+}
 template<typename DataType>
 inline bool SequenceList<DataType>::erase(Iterator _first, Iterator _last)
 {
@@ -375,5 +389,19 @@ inline bool SequenceList<DataType>::erase(Iterator _first, Iterator _last)
 	}
 
 	return false;
+}
+template<typename DataType>
+template<typename fn_bool>
+inline size_t SequenceList<DataType>::select_val(fn_bool Function, Iterator _first, Iterator _last)
+{
+	size_t index = 0;
+	for (auto i = _first; i != _last; ++i, ++index)
+	{
+		if (Function(*i))
+		{
+			return index;
+		}
+	}
+	return 0;
 }
 #endif // !SEQUENCELIST_H
