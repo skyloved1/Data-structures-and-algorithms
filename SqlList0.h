@@ -58,6 +58,7 @@ public:
 		}
 		std::endl(std::cout);
 		std::cerr << "超出当前长度，获取内容失败！\n";
+		return DataType();
 	}
 	//friend
 	friend  std::ostream& operator<<(std::ostream& os, const SequenceList& L);
