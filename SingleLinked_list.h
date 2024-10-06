@@ -528,26 +528,18 @@ size_t SingleLinked_list_with_head<DataType>::getLength() const {
 	return length;
 }
 
-// 获取头部迭代器
+// 获取头部指针
 template<typename DataType>
 inline typename SingleLinked_list_with_head<DataType>::Node* SingleLinked_list_with_head<DataType>::getHead() const
 {
 	return head;
 }
 
-// 获取尾部迭代器
+// 获取尾部指针
 template<typename DataType>
 typename SingleLinked_list_with_head<DataType>::Node* SingleLinked_list_with_head<DataType>::getEnd() const {
 	return  last;
 }
-
-// 重载输入运算符
-template<typename DataType>
-std::istream& operator>>(std::istream& is, typename SingleLinked_list_with_head<DataType>::Node* node) {
-	is >> node->data;
-	return is;
-}
-
 ;
 
 #endif // !SINGLE_LINKED_LIST
