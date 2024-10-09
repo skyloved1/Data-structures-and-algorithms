@@ -249,8 +249,11 @@ inline bool SingleLinked_list_with_head<DataType>::delete_all_val(DataType val)
 			currentNode = currentNode_prior->Next;
 			found = true;
 		}
-		currentNode_prior = currentNode_prior->Next;
-		currentNode = currentNode->Next;
+		else
+		{
+			currentNode_prior = currentNode_prior->Next;
+			currentNode = currentNode->Next;
+		}
 	}
 
 	return found; // 如果未找到节点，返回 false
@@ -273,6 +276,15 @@ inline bool SingleLinked_list_with_head<DataType>::insert_still_sequence_by_asc(
 		currentNode_prior = currentNode_prior->Next;
 		currentNode = currentNode->Next;
 	}
+	// 如果遍历到链表末尾仍未找到合适位置，将新节点插入到链表末尾
+	if (currentNode == nullptr)
+	{
+		currentNode_prior->Next = newNode;
+		last = newNode;
+		++length;
+		return true;
+	}
+
 	return false;
 }
 template<typename DataType>
