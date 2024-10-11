@@ -35,7 +35,7 @@ public:
 	bool delete_first_val(DataType val);									//删除第一个值为val的元素
 	bool delete_all_val(DataType val);										//删除所有值为Val的元素 O(n)
 	template<typename fn_bool>
-	size_t select_val(fn_bool Function, Iterator _first, Iterator); //查询值
+	size_t select_val(Iterator _first, Iterator _last, fn_bool Function); //查询值
 	Iterator begin() { return &_ptr[0]; }
 	Iterator end() { return &_ptr[currentLength]; }
 	//common bool
@@ -393,7 +393,7 @@ inline bool SequenceList<DataType>::erase(Iterator _first, Iterator _last)
 }
 template<typename DataType>
 template<typename fn_bool>
-inline size_t SequenceList<DataType>::select_val(fn_bool Function, Iterator _first, Iterator _last)
+inline size_t SequenceList<DataType>::select_val(Iterator _first, Iterator _last, fn_bool Function)
 {
 	size_t index = 0;
 	for (auto i = _first; i != _last; ++i, ++index)
