@@ -18,7 +18,7 @@ public:
 	//constructor
 
 	SequenceList();
-	SequenceList(int Size, DataType default_val = 0);
+	SequenceList(int Size, DataType default_val = DataType());
 	SequenceList(const SequenceList<DataType>& L);
 	SequenceList(const DataType* arr, size_t Size);;
 	SequenceList(const DataType* arr_first, const DataType* arr_last);
