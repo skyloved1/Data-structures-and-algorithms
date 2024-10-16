@@ -41,10 +41,10 @@ public:
 		}
 		return false;
 	}
-	DataType get() const {
+	DataType get() {
 		return stack[topIndex];
 	}
-	const DataType& getTop() const {
+	const DataType& get() const {
 		return stack[topIndex];
 	}
 	bool copy_to_arr(DataType* _first, DataType* _last, DataType* _destination) const {
