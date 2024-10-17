@@ -19,7 +19,7 @@ public:
 	~SeqStack();
 
 	// common methods
-	bool push(const DataType& val) {
+	bool push_back(const DataType& val) {
 		stack.push_back(val);
 		++topIndex;
 		return true;
