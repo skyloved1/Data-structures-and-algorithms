@@ -173,6 +173,7 @@ inline SequenceList<DataType>::SequenceList(std::initializer_list<DataType> list
 template<typename DataType>
 inline SequenceList<DataType>::~SequenceList()
 {
+	std::endl(std::cout);
 	std::cout << "该类已销毁" << std::endl;
 	delete[]_ptr;
 }
