@@ -42,9 +42,14 @@ public:
 		return false;
 	}
 	DataType get() {
+		--topIndex;
 		return stack[topIndex];
 	}
 	const DataType& get() const {
+		--topIndex;
+		return stack[topIndex];
+	}
+	DataType getTop() {
 		return stack[topIndex];
 	}
 	bool copy_to_arr(DataType* _first, DataType* _last, DataType* _destination) const {
@@ -70,9 +75,7 @@ private:
 
 template<typename DataType>
 inline SeqStack<DataType>::SeqStack(SeqStack<DataType>&& L) noexcept
-	: stack(std::move(L.stack)), topIndex(L.topIndex) {
-	L.topIndex = -1;
-}
+	: stack(std::move(L.stack)), topIndex(L.topIndex) {}
 
 template<typename DataType>
 SeqStack<DataType>::~SeqStack() {}
