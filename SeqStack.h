@@ -1,7 +1,7 @@
 #pragma once
 #ifndef SEQSTACK_H
 #define SEQSTACK_H
-#include "SqlList0.h"
+#include "List.h"
 #include <initializer_list>
 #include "Basic_Iterator.h"
 
@@ -41,6 +41,10 @@ public:
 		}
 		return false;
 	}
+	//TODO reverse
+	bool reverse() {
+		return stack.reverse();
+	}
 	DataType get() {
 		--topIndex;
 		return stack[topIndex];
@@ -65,8 +69,8 @@ public:
 		Iterator(DataType* ptr = nullptr) : BasicIterator<DataType>(ptr) {}
 	};
 
-	Iterator begin();
-	Iterator end();
+	DataType* begin() { return stack.begin(); }
+	DataType* end() { return stack.end(); }
 
 private:
 	SequenceList<DataType> stack;
@@ -79,15 +83,5 @@ inline SeqStack<DataType>::SeqStack(SeqStack<DataType>&& L) noexcept
 
 template<typename DataType>
 SeqStack<DataType>::~SeqStack() {}
-
-template<typename DataType>
-typename SeqStack<DataType>::Iterator SeqStack<DataType>::begin() {
-	return Iterator(stack.begin());
-}
-
-template<typename DataType>
-typename SeqStack<DataType>::Iterator SeqStack<DataType>::end() {
-	return Iterator(stack.begin() + topIndex + 1);
-}
 
 #endif // !SEQSTACK_H
