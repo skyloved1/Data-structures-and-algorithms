@@ -35,15 +35,15 @@ public:
 	SingleLinked_list_with_head(SingleLinked_list_with_head<DataType>&& L);
 	~SingleLinked_list_with_head();
 
-	//TODO 头插法 尾插法
+	// 头插法 尾插法
 	bool head_insert(size_t pos, DataType val);
 	bool tail_insert(size_t pos, DataType val);
-	//TODO  删除第一个值为val的删除所有值为val的，
+	//  删除第一个值为val的删除所有值为val的，
 	bool delete_first_val(DataType val);
 	bool delete_all_val(DataType val);
-	//TODO  插入前有序，插入后有序  默认升序
+	//  插入前有序，插入后有序  默认升序
 	bool insert_still_sequence_by_asc(DataType val);
-	//TODO 逆置单链表
+	// 逆置单链表
 	void reverse_list();
 	template<typename Fn_bool>
 	size_t select_val(Fn_bool Function);		//按值查找
