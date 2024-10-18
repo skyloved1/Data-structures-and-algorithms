@@ -34,6 +34,7 @@ public:
 	bool copy_to_arr(Iterator _first, Iterator _last, DataType* _destnation); //将区间内的内容 赋值给普通数组
 	bool delete_first_val(DataType val);									//删除第一个值为val的元素
 	bool delete_all_val(DataType val);										//删除所有值为Val的元素 O(n)
+	bool reverse();
 	template<typename fn_bool>
 	size_t select_val(Iterator _first, Iterator _last, fn_bool Function); //查询值
 	Iterator begin() { return &_ptr[0]; }
@@ -334,6 +335,22 @@ inline bool SequenceList<DataType>::delete_all_val(DataType val)
 		}
 
 		return 1;
+	}
+	return false;
+}
+
+template<typename DataType>
+inline bool SequenceList<DataType>::reverse()
+{
+	if (!isEmpty())
+	{
+		for (size_t i = 0, j = get_length() - 1; i < j; ++i, --j)
+		{
+			auto temp = _ptr[i];
+			_ptr[i] = _ptr[j];
+			_ptr[j] = temp;
+		}
+		return true;
 	}
 	return false;
 }
