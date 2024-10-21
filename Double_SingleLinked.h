@@ -28,11 +28,15 @@ public:
 	//设置链表是否循环(默认为否)
 	bool set_loop(bool b = false);
 	bool insertNode(const DataType& val);
-	bool deleteNode();
+	bool deleteNode(size_t index);
 	//查找值，_start 和_end代表要查找的范围
 	template<typename bool_Callable, typename...Args>
 	const DataType& select_val(bool_Callable _callable, Args...args, Double_LinkedList<DataType>* _start = head->Next, Double_LinkedList<DataType>* _end = tail);
 
+	bool push_back(const DataType& val);
+	bool push_front(const DataType* val) { return head_insert(val) };
+	bool pop_back();
+	bool pop_front();
 	//getter
 
 	bool isLoop()const;
@@ -60,6 +64,18 @@ public:
 			return temp;
 		}
 
+		// 前置--
+		Iterator& operator--() {
+			node = node->Previous;
+			return *this;
+		}
+
+		// 后置--
+		Iterator operator--(int) {
+			Iterator temp = *this;
+			node = node->Previous;
+			return temp;
+		}
 		bool operator==(const Iterator& other) const { return node == other.node; }
 		bool operator!=(const Iterator& other) const { return node != other.node; }
 
@@ -229,20 +245,71 @@ bool Double_LinkedList<DataType>::insertNode(const DataType& val) {
 }
 
 template<typename DataType>
-bool Double_LinkedList<DataType>::deleteNode() {
-	if (!tail) {
+inline bool Double_LinkedList<DataType>::deleteNode(size_t index)
+{
+	if (index >= length) {
 		return false;
 	}
-	Double_LinkedList<DataType>* temp = tail;
-	tail = tail->Previous;
-	if (tail) {
-		tail->Next = nullptr;
+
+	if (index == 0) {
+		pop_front();
+		return true;
 	}
-	else {
-		head = nullptr;
+
+	Double_LinkedList<DataType>* current = head;
+	for (size_t i = 0; i < index - 1; ++i) {
+		current = current->Next;
 	}
-	delete temp;
+
+	Double_LinkedList<DataType>* nodeToDelete = current->Next;
+	current->Next = nodeToDelete->Next;
+	if (current->Next) {
+		current->Next->Previous = current;
+	}
+
+	if (nodeToDelete == tail) {
+		tail = current;
+	}
+
+	delete nodeToDelete;
 	--length;
+
+	return true;
+}
+
+template<typename DataType>
+inline bool Double_LinkedList<DataType>::push_back(const DataType& val)
+{
+	Double_LinkedList<DataType>* temp = new Double_LinkedList();
+	if (temp)
+	{
+		temp->data = val;
+		temp->Previous = tail;
+		tail->Next = temp;
+		return true;
+	}
+	return false;
+}
+
+template<typename DataType>
+inline bool Double_LinkedList<DataType>::pop_back()
+{
+	Double_LinkedList<DataType>* temp = tail;
+	tail = temp->Previous;
+	tail->Next = nullptr;
+	delete temp;
+	return true;
+}
+
+// The code you provided has a syntax error. There is a typo in the pop_front() method implementation. The assignment operator (=>) should be replaced with the dereference operator (->) to access the Previous pointer of the head node. Here's the corrected code:
+
+template<typename DataType>
+inline bool Double_LinkedList<DataType>::pop_front()
+{
+	Double_LinkedList<DataType>* temp = head;
+	head = head->Next;
+	head->Previous = nullptr;
+	delete temp;
 	return true;
 }
 
