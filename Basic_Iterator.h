@@ -22,18 +22,18 @@ public:
 	virtual T* operator->() const { return ptr; }
 
 	// 前置递增操作符
-	virtual BasicIterator& operator++() {
+	virtual  BasicIterator& operator++() {
 		++ptr;
 		return *this;
 	}
 
 	// 后置递增操作符
-	virtual BasicIterator operator++(int) {
+	virtual  BasicIterator operator++(int) {
 		BasicIterator temp = *this;
 		++(*this);
 		return temp;
 	}
-	virtual BasicIterator& operator=(const BasicIterator& other) {
+	virtual  BasicIterator& operator=(const BasicIterator& other) {
 		if (this->ptr != other.ptr)
 		{
 			this->ptr = other.ptr;
