@@ -34,7 +34,7 @@ public:
 	const DataType& select_val(bool_Callable _callable, Args...args, Double_LinkedList<DataType>* _start = head->Next, Double_LinkedList<DataType>* _end = tail);
 
 	bool push_back(const DataType& val);
-	bool push_front(const DataType* val) { return head_insert(val) };
+	bool push_front(const DataType* val);
 	bool pop_back();
 	bool pop_front();
 	//getter
@@ -286,9 +286,21 @@ inline bool Double_LinkedList<DataType>::push_back(const DataType& val)
 		temp->data = val;
 		temp->Previous = tail;
 		tail->Next = temp;
+		tail = temp;
 		return true;
 	}
 	return false;
+}
+
+template<typename DataType>
+inline bool Double_LinkedList<DataType>::push_front(const DataType* val)
+{
+	Double_LinkedList<DataType>* temp = new Double_LinkedList<DataType>();
+	temp->data = val;
+	temp->Next = this;
+	temp->Previous = this->Previous;
+	this->Previous = temp;
+	head = temp;
 }
 
 template<typename DataType>
