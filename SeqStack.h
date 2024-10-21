@@ -41,7 +41,6 @@ public:
 		}
 		return false;
 	}
-	//TODO reverse
 	bool reverse() {
 		return stack.reverse();
 	}
